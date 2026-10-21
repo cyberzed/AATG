@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aarhus Together 2026 — Beer List & Festival Guide</title>
+  <meta name="description" content="Explore and filter the complete beer list for Aarhus Together 2026. Filter by session, style, brewery, ABV, rating, and location.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation & Festival Header -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <div class="brand">
+        <div class="brand-icon">🍺</div>
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <h1>Aarhus Together</h1>
+            <span class="badge-year">2026</span>
+          </div>
+          <p class="brand-subtitle">Centralværkstedet &amp; Smedjen • Beer Explorer</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- My Tasting List Button -->
+        <button id="myListBtn" class="btn btn-secondary btn-badge" title="View your tasting wishlist and rated beers">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span>My List</span>
+          <span id="favCountBadge" class="count-pill">0</span>
+        </button>
+
+        <!-- Share URL Button -->
+        <button id="shareBtn" class="btn btn-ghost btn-icon-only" title="Share or copy link to current filters">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" class="btn btn-ghost btn-icon-only" title="Toggle theme">
+          <svg id="themeIconDark" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg id="themeIconLight" class="icon" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Stats Bar -->
+  <section class="stats-bar">
+    <div class="container stats-inner">
+      <div class="stat-item">
+        <span class="stat-value" id="statBeers">463</span>
+        <span class="stat-label">Beers</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" id="statBreweries">80</span>
+        <span class="stat-label">Breweries</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" id="statCountries">23</span>
+        <span class="stat-label">Countries</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" id="statAvgRating">★ 3.86</span>
+        <span class="stat-label">Avg Rating</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item stat-personal">
+        <span class="stat-value" id="statTasted">0</span>
+        <span class="stat-label">Tasted</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter & Search Controls Header -->
+  <section class="controls-section">
+    <div class="container">
+      
+      <!-- Session Tabs -->
+      <div class="session-tabs-wrapper">
+        <div class="session-tabs" role="tablist">
+          <button class="session-tab active" data-session="all" role="tab" aria-selected="true">
+            <span>All Sessions</span>
+            <span class="tab-count" id="countSessionAll">463</span>
+          </button>
+          <button class="session-tab" data-session="Fredag" role="tab" aria-selected="false">
+            <span>🍻 Fredag</span>
+            <span class="tab-count" id="countSessionFredag">154</span>
+          </button>
+          <button class="session-tab" data-session="Lørdag tidlig" role="tab" aria-selected="false">
+            <span>☀️ Lørdag tidlig</span>
+            <span class="tab-count" id="countSessionLordagTidlig">154</span>
+          </button>
+          <button class="session-tab" data-session="Lørdag sen" role="tab" aria-selected="false">
+            <span>🌙 Lørdag sen</span>
+            <span class="tab-count" id="countSessionLordagSen">155</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Search Box -->
+      <div class="search-bar-row">
+        <div class="search-input-box">
+          <svg class="search-icon icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Search by beer, brewery, style, notes, country, or stand #..." autocomplete="off" spellcheck="false">
+          <button id="searchClearBtn" class="search-clear-btn" title="Clear search" style="display: none;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <button id="toggleFiltersBtn" class="btn btn-secondary filter-toggle-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          <span>More Filters</span>
+          <span id="activeFiltersBadge" class="filter-count-badge" style="display:none;">0</span>
+        </button>
+      </div>
+
+      <!-- Quick Category Pills -->
+      <div class="category-pills-scroll">
+        <div class="category-pills" id="categoryPills">
+          <button class="cat-pill active" data-category="all">All Styles <span class="pill-count">463</span></button>
+          <button class="cat-pill" data-category="IPA">IPA <span class="pill-count">135</span></button>
+          <button class="cat-pill" data-category="Sour & Wild">Sour &amp; Wild <span class="pill-count">112</span></button>
+          <button class="cat-pill" data-category="Stout & Porter">Stout &amp; Porter <span class="pill-count">65</span></button>
+          <button class="cat-pill" data-category="Lager & Pilsner">Lager &amp; Pilsner <span class="pill-count">56</span></button>
+          <button class="cat-pill" data-category="Pale Ale">Pale Ale <span class="pill-count">11</span></button>
+          <button class="cat-pill" data-category="Belgian & Saison">Belgian &amp; Saison <span class="pill-count">21</span></button>
+          <button class="cat-pill" data-category="Barley Wine">Barley Wine <span class="pill-count">16</span></button>
+          <button class="cat-pill" data-category="Wine & Cider">Wine &amp; Cider <span class="pill-count">22</span></button>
+          <button class="cat-pill" data-category="Non-Alcoholic">Non-Alcoholic <span class="pill-count">7</span></button>
+          <button class="cat-pill" data-category="Other Ale">Other <span class="pill-count">18</span></button>
+        </div>
+      </div>
+
+      <!-- Advanced Filter Panel (Collapsible) -->
+      <div id="advancedFiltersPanel" class="advanced-filters-panel" style="display:none;">
+        <div class="filters-grid">
+          
+          <!-- Venue Area / Hall -->
+          <div class="filter-group">
+            <label for="filterHall">Venue / Hall</label>
+            <select id="filterHall" class="form-select">
+              <option value="all">All Locations</option>
+              <option value="Centralværkstedet">Centralværkstedet (#1 – #40)</option>
+              <option value="Smedjen">Smedjen (#41 – #74)</option>
+            </select>
+          </div>
+
+          <!-- Brewery Select -->
+          <div class="filter-group">
+            <label for="filterBrewery">Brewery</label>
+            <select id="filterBrewery" class="form-select">
+              <option value="all">All Breweries (80)</option>
+            </select>
+          </div>
+
+          <!-- Specific Style Multi-Select -->
+          <div class="filter-group style-multiselect-group">
+            <label id="styleSelectLabel">Specific Style(s)</label>
+            <div class="multiselect-container" id="styleMultiSelect">
+              <button type="button" class="multiselect-trigger" id="styleMultiSelectTrigger" aria-haspopup="listbox" aria-expanded="false">
+                <span class="multiselect-label" id="styleMultiSelectText">All Specific Styles (148)</span>
+                <span class="multiselect-badge" id="styleSelectBadge" style="display:none;">0</span>
+                <svg class="icon chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="multiselect-dropdown" id="styleMultiSelectDropdown" style="display:none;">
+                <div class="multiselect-search-box">
+                  <svg class="icon search-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="text" id="styleSearchInput" placeholder="Search 148 styles..." autocomplete="off">
+                </div>
+                <div class="multiselect-actions">
+                  <button type="button" id="styleSelectAllBtn" class="btn-link">Select All</button>
+                  <button type="button" id="styleClearAllBtn" class="btn-link">Clear</button>
+                </div>
+                <div class="multiselect-options" id="styleOptionsList">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Country Select -->
+          <div class="filter-group">
+            <label for="filterCountry">Country</label>
+            <select id="filterCountry" class="form-select">
+              <option value="all">All Countries (23)</option>
+            </select>
+          </div>
+
+          <!-- Rating Filter -->
+          <div class="filter-group">
+            <label for="filterRating">Minimum Untappd Rating</label>
+            <select id="filterRating" class="form-select">
+              <option value="all">Any Rating</option>
+              <option value="4.2">⭐ 4.2+ (Top Rated)</option>
+              <option value="4.0">⭐ 4.0+ (Excellent)</option>
+              <option value="3.8">⭐ 3.8+ (Great)</option>
+              <option value="3.5">⭐ 3.5+ (Good)</option>
+              <option value="unrated">❔ Unrated / Exclusives Only</option>
+            </select>
+          </div>
+
+          <!-- ABV Preset -->
+          <div class="filter-group">
+            <label for="filterAbv">Alcohol Strength (ABV)</label>
+            <select id="filterAbv" class="form-select">
+              <option value="all">Any ABV (0.5% – 20.9%)</option>
+              <option value="low">Low &amp; Non-Alc (&lt; 4.5%)</option>
+              <option value="standard">Standard (4.5% – 6.5%)</option>
+              <option value="strong">Strong (6.5% – 9.0%)</option>
+              <option value="heavy">Imperial / Heavy (9.0%+)</option>
+              <option value="custom">Custom Range...</option>
+            </select>
+          </div>
+
+          <!-- Custom ABV Min/Max (hidden unless custom selected) -->
+          <div class="filter-group custom-abv-group" id="customAbvGroup" style="display:none;">
+            <label>Custom ABV Range</label>
+            <div class="range-inputs">
+              <input type="number" id="filterAbvMin" placeholder="Min %" min="0" max="25" step="0.5">
+              <span>to</span>
+              <input type="number" id="filterAbvMax" placeholder="Max %" min="0" max="25" step="0.5">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Checkbox / Toggle Quick Filters -->
+        <div class="quick-toggles-row">
+          <label class="toggle-checkbox">
+            <input type="checkbox" id="filterFavorites">
+            <span class="custom-check"></span>
+            <span class="toggle-text">❤️ Favorites Only</span>
+          </label>
+
+          <label class="toggle-checkbox">
+            <input type="checkbox" id="filterTasted">
+            <span class="custom-check"></span>
+            <span class="toggle-text">✅ Tasted Only</span>
+          </label>
+
+          <label class="toggle-checkbox">
+            <input type="checkbox" id="filterUntasted">
+            <span class="custom-check"></span>
+            <span class="toggle-text">⏳ Untasted Only</span>
+          </label>
+
+          <label class="toggle-checkbox">
+            <input type="checkbox" id="filterNotes">
+            <span class="custom-check"></span>
+            <span class="toggle-text">📝 Has Special Notes</span>
+          </label>
+
+          <div class="filter-panel-actions">
+            <button id="resetFiltersBtn" class="btn btn-ghost btn-sm">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              <span>Reset Filters</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action & View Controls Bar -->
+      <div class="results-controls-bar">
+        <div class="results-meta">
+          <span class="results-count" id="resultsCount">Showing 463 beers</span>
+          <div class="active-chips" id="activeFilterChips"></div>
+        </div>
+
+        <div class="view-and-sort">
+          <!-- Sort Dropdown -->
+          <div class="sort-wrapper">
+            <label for="sortSelect" class="sr-only">Sort by</label>
+            <select id="sortSelect" class="form-select form-select-sm">
+              <option value="rating-desc">⭐ Untappd: Highest First</option>
+              <option value="rating-asc">Untappd: Lowest First</option>
+              <option value="name-asc">Beer Name: A to Z</option>
+              <option value="brewery-asc">Brewery: A to Z</option>
+              <option value="abv-desc">ABV: Highest First</option>
+              <option value="abv-asc">ABV: Lowest First</option>
+              <option value="location-asc">Location: Hall &amp; Stand</option>
+            </select>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="view-mode-buttons" role="group" aria-label="View mode">
+            <button id="viewGridBtn" class="btn btn-ghost btn-icon-only active" title="Card Grid View" aria-pressed="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </button>
+            <button id="viewTableBtn" class="btn btn-ghost btn-icon-only" title="Compact Table View" aria-pressed="false">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Beer Listings -->
+  <main class="main-content container">
+    <!-- Grid View Container -->
+    <div id="beerGrid" class="beer-grid"></div>
+
+    <!-- Table View Container -->
+    <div id="beerTableWrapper" class="beer-table-wrapper" style="display:none;">
+      <table class="beer-table">
+        <thead>
+          <tr>
+            <th class="th-actions">Save</th>
+            <th class="th-name">Beer</th>
+            <th class="th-brewery">Brewery</th>
+            <th class="th-style">Style</th>
+            <th class="th-country">Country</th>
+            <th class="th-abv">ABV</th>
+            <th class="th-rating">Rating</th>
+            <th class="th-location">Stand</th>
+            <th class="th-session">Session</th>
+            <th class="th-untappd">Link</th>
+          </tr>
+        </thead>
+        <tbody id="beerTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-icon">🍻</div>
+      <h3>No beers match your filters</h3>
+      <p>Try loosening your search terms or resetting filters to see the full festival lineup.</p>
+      <button id="emptyResetBtn" class="btn btn-primary">Reset All Filters</button>
+    </div>
+  </main>
+
+  <!-- My List & Wishlist Modal -->
+  <div id="myListModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2>My Festival Tasting Plan</h2>
+          <p class="modal-subtitle">Your saved favorites and tasted beers stored locally</p>
+        </div>
+        <button id="closeModalBtn" class="btn btn-ghost btn-icon-only modal-close-btn" title="Close modal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button id="modalTabFavs" class="modal-tab active">Favorites (<span id="modalFavCount">0</span>)</button>
+          <button id="modalTabTasted" class="modal-tab">Tasted (<span id="modalTastedCount">0</span>)</button>
+        </div>
+
+        <div id="modalListContent" class="modal-list-content">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button id="openSharePhoneBtn" class="btn btn-primary btn-sm">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>📱 Share to Phone</span>
+          </button>
+          <button id="exportCsvBtn" class="btn btn-secondary btn-sm">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>CSV</span>
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <button id="clearMyListBtn" class="btn btn-ghost btn-sm text-danger">Clear All</button>
+          <button id="closeModalBottomBtn" class="btn btn-secondary btn-sm">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share / Transfer to Phone Modal -->
+  <div id="sharePhoneModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-card-share">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2>📱 Transfer to Phone</h2>
+          <p class="modal-subtitle">Open your curated tasting plan on your mobile device</p>
+        </div>
+        <button id="closeSharePhoneBtn" class="btn btn-ghost btn-icon-only modal-close-btn" title="Close">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body share-modal-body">
+        <!-- Host Status Badge -->
+        <div id="qrHostStatusBadge" class="host-status-badge status-ready" style="margin-bottom: 0.85rem;"></div>
+
+        <!-- QR Code Card -->
+        <div class="qr-container">
+          <div class="qr-wrapper">
+            <img id="qrCodeImg" class="qr-image" src="" alt="Scan QR code with phone" width="220" height="220">
+          </div>
+          <p class="qr-caption">📷 Point your phone's camera at this QR code to open and save your list</p>
+        </div>
+
+        <!-- Share Link Row -->
+        <div class="share-field-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
+            <label for="sharePlanLinkInput">Shareable Link</label>
+            <a id="testLinkBtn" href="#" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent-amber); font-weight:600; text-decoration:none;">Open in new tab ↗</a>
+          </div>
+          <div class="share-input-row">
+            <input type="text" id="sharePlanLinkInput" readonly value="">
+            <button id="copyPlanLinkBtn" class="btn btn-primary btn-sm">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy Link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Transfer Actions -->
+        <div class="share-actions-grid">
+          <button id="copyTextPlanBtn" class="btn btn-secondary btn-sm action-card-btn" title="Copy text schedule for WhatsApp, Notes, or Signal">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>📋 Copy Text Plan</span>
+          </button>
+
+          <button id="exportJsonBtn" class="btn btn-secondary btn-sm action-card-btn" title="Download backup JSON file">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>💾 Export JSON</span>
+          </button>
+
+          <button id="openImportBtn" class="btn btn-secondary btn-sm action-card-btn" title="Import plan from JSON or code">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>📥 Import Plan</span>
+          </button>
+        </div>
+
+        <!-- Advanced Network / Host setting (collapsible) -->
+        <details class="network-details">
+          <summary>⚙️ Change Host / Base URL (for Wi-Fi or custom domain)</summary>
+          <div class="network-body">
+            <p class="network-hint">If your phone is on the same local Wi-Fi, you can set your laptop's local IP (e.g. <code>http://192.168.1.15:8000</code>) or your hosted site URL.</p>
+            <div class="share-input-row">
+              <input type="text" id="customHostInput" placeholder="e.g. http://192.168.1.50:8000">
+              <button id="applyHostBtn" class="btn btn-secondary btn-sm">Update QR</button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="modal-footer">
+        <button id="closeSharePhoneBottomBtn" class="btn btn-primary btn-sm" style="margin-left:auto;">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Shared Plan Prompt Modal -->
+  <div id="importPromptModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2>📲 Import Shared Plan</h2>
+          <p class="modal-subtitle">A festival tasting plan was found in this link</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="import-summary-box">
+          <div class="import-stat">
+            <span class="import-num" id="importFavCount">0</span>
+            <span class="import-lbl">Favorites</span>
+          </div>
+          <div class="import-stat">
+            <span class="import-num" id="importTastedCount">0</span>
+            <span class="import-lbl">Tasted</span>
+          </div>
+        </div>
+        <p class="import-desc">How would you like to save these to this device?</p>
+      </div>
+      <div class="modal-footer import-footer">
+        <button id="importMergeBtn" class="btn btn-secondary btn-sm">+ Merge</button>
+        <button id="importReplaceBtn" class="btn btn-primary btn-sm">✓ Save to Phone</button>
+        <button id="importDismissBtn" class="btn btn-ghost btn-sm">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Import Modal -->
+  <div id="importDataModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2>📥 Import Tasting Plan</h2>
+          <p class="modal-subtitle">Paste JSON or select a backup file</p>
+        </div>
+        <button id="closeImportDataBtn" class="btn btn-ghost btn-icon-only modal-close-btn" title="Close">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:0.85rem;">
+          <label style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-secondary);display:block;margin-bottom:0.35rem;">Upload JSON File</label>
+          <input type="file" id="importFileInput" accept=".json" style="font-size:0.85rem;color:var(--text-secondary);">
+        </div>
+        <div class="form-group">
+          <label for="importJsonTextarea" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-secondary);display:block;margin-bottom:0.35rem;">Or Paste JSON / IDs</label>
+          <textarea id="importJsonTextarea" rows="4" placeholder='{"favorites":["aat26-001","aat26-003"]}' style="width:100%;background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);border-radius:var(--radius-md);padding:0.5rem;font-family:var(--font-mono);font-size:0.8rem;outline:none;box-sizing:border-box;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="executeImportBtn" class="btn btn-primary btn-sm" style="margin-left:auto;">Import Plan</button>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="toast-notification" style="display:none;">
+    <span id="toastMessage">Action completed</span>
+  </div>
+
+  <!-- Back to top button -->
+  <button id="backToTopBtn" class="back-to-top" title="Back to top" style="display:none;">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
+  <!-- Offline / Local fallback data first, then app script -->
+  <script src="beers-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
