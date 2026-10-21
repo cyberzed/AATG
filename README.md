@@ -67,6 +67,11 @@ npx serve .
   - **Shareable Filter URLs**: Active filters are automatically synchronized into the URL query string. Click **Share** to copy the filtered link to your clipboard!
   - **Dark & Light Themes**: Dark craft beer aesthetic by default with toggle for bright outdoor lighting.
 
+- **📲 Installable & Offline (PWA)**:
+  - Served over HTTPS (e.g. GitHub Pages), the site can be added to the home screen (iOS: Share → *Add to Home Screen*; Android: *Install app*) and works without signal after the first load.
+  - `python3 sync-data.py` stamps a new cache version into `sw.js` whenever the data or app files change, so phones pick up updates.
+  - Note: an installed iOS app has its own storage, separate from Safari. Move a list across with Share to Phone or JSON backup.
+
 ---
 
 ## 📁 File Structure
@@ -75,21 +80,19 @@ npx serve .
 - `style.css` — Modern stylesheet with CSS custom properties, responsive grid, and dark/light themes.
 - `app.js` — Reactive filtering engine, URL state sync, localStorage wishlist manager, and sorting logic.
 - `beers.json` — Raw JSON dataset with 463 beer entries.
+- `sync-data.py` — Rebuilds `beers-data.js` and stamps the service worker cache version.
+- `manifest.webmanifest`, `sw.js`, `icons/` — PWA manifest, offline service worker and app icons.
 - `beers-data.js` — Standalone JavaScript data bundle enabling zero-config `file://` protocol execution.
 
 ---
 
 ## 🔄 Updating the Data
 
-If `beers.json` is modified or updated with new festival information, sync the offline fallback by running:
+After editing `beers.json` (or any app file), run this before committing:
 
 ```bash
-python3 -c "
-with open('beers.json', 'r', encoding='utf-8') as f:
-    c = f.read()
-with open('beers-data.js', 'w', encoding='utf-8') as f:
-    f.write('window.BEERS_DATA = ' + c + ';\n')
-print('Updated beers-data.js')
-"
+python3 sync-data.py
 ```
+
+It rebuilds the offline fallback `beers-data.js` and stamps `sw.js` with a new cache version, so installed phones pick up the update.
 
