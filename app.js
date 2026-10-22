@@ -257,6 +257,7 @@
     state.beers.forEach(beer => {
       beer.category = getStyleCategory(beer.style);
     });
+    buildSearchIndex();
 
     initStorage();
     initFiltersOptions();
@@ -392,9 +393,62 @@
   /**
    * Filter and Sort Logic
    */
+  /**
+   * Fuzzy search (Fuse.js, vendored for offline use)
+   */
+  const SEARCH_FIELDS = ['name', 'brewery', 'style', 'country', 'location', 'session', 'note', 'served_by'];
+  let fuseIndex = null;
+
+  // Lowercase and fold Danish letters and accents, so "lordag" finds "Lørdag"
+  function foldText(str) {
+    return (str || '')
+      .toLowerCase()
+      .replace(/ø/g, 'o')
+      .replace(/æ/g, 'ae')
+      .replace(/å/g, 'aa')
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '');
+  }
+
+  function buildSearchIndex() {
+    state.beers.forEach(beer => {
+      beer.searchText = SEARCH_FIELDS.map(key => foldText(beer[key])).join(' | ');
+    });
+    if (typeof window.Fuse !== 'function') return;
+    fuseIndex = new window.Fuse(state.beers, {
+      keys: SEARCH_FIELDS.map(key => ({ name: key, getFn: beer => foldText(beer[key]) })),
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeScore: false
+    });
+  }
+
+  // Each word must match. Words with digits (stand #39, ABV) and short words match exactly. Longer words
+  // fall back to typo-tolerant matching only when nothing contains them, so "stout" doesn't also find "Southern".
+  function getSearchMatches(query) {
+    const words = foldText(query).split(/\s+/).filter(Boolean);
+    if (words.length === 0) return null;
+
+    let matches = null;
+    words.forEach(word => {
+      let ids;
+      if (/^#\d+$/.test(word)) {
+        const standPattern = new RegExp(word + '(?!\\d)');
+        ids = new Set(state.beers.filter(b => standPattern.test(foldText(b.location))).map(b => b.id));
+      } else {
+        ids = new Set(state.beers.filter(b => b.searchText.includes(word)).map(b => b.id));
+        if (ids.size === 0 && fuseIndex && word.length >= 5 && !/\d/.test(word)) {
+          ids = new Set(fuseIndex.search(word).map(r => r.item.id));
+        }
+      }
+      matches = matches ? new Set([...matches].filter(id => ids.has(id))) : ids;
+    });
+    return matches;
+  }
+
   function getFilteredBeers() {
     const f = state.filters;
-    const query = f.search.trim().toLowerCase();
+    const searchMatches = getSearchMatches(f.search);
 
     return state.beers.filter(b => {
       // Session filter
@@ -475,16 +529,8 @@
       }
 
       // Text Search across all fields
-      if (query) {
-        const match =
-          (b.name && b.name.toLowerCase().includes(query)) ||
-          (b.brewery && b.brewery.toLowerCase().includes(query)) ||
-          (b.style && b.style.toLowerCase().includes(query)) ||
-          (b.country && b.country.toLowerCase().includes(query)) ||
-          (b.location && b.location.toLowerCase().includes(query)) ||
-          (b.note && b.note.toLowerCase().includes(query)) ||
-          (b.served_by && b.served_by.toLowerCase().includes(query));
-        if (!match) return false;
+      if (searchMatches && !searchMatches.has(b.id)) {
+        return false;
       }
 
       return true;

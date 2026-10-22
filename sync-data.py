@@ -15,7 +15,7 @@ beers = (root / 'beers.json').read_text(encoding='utf-8')
 print('Updated beers-data.js')
 
 digest = hashlib.sha256()
-for name in ('beers.json', 'app.js', 'style.css', 'index.html'):
+for name in ('beers.json', 'app.js', 'style.css', 'index.html', 'vendor/fuse.basic.min.js'):
     digest.update((root / name).read_bytes())
 version = digest.hexdigest()[:8]
 

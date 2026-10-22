@@ -34,7 +34,8 @@ npx serve .
   - Automatically updates category counts when switching sessions.
 
 - **Instant Full-Text Search**:
-  - Search instantaneously by **beer name**, **brewery**, **style**, **notes** (e.g. *"bottle pour"*, *"double mash"*, *"coffee"*), **stand number** (e.g. *`#39`*), or **country**.
+  - Search instantaneously by **beer name**, **brewery**, **style**, **notes** (e.g. *"bottle pour"*, *"double mash"*, *"coffee"*), **stand number** (e.g. *`#39`*), **session**, or **country**.
+  - **Typo-tolerant**: *"clodwatr"* finds Cloudwater and *"lordag"* finds Lørdag. Every word must match, in any order (*"alefarm ipa"*). Powered by [Fuse.js](https://fusejs.io), stored in `vendor/` so it works offline.
 
 - **Style Categories & Specific Styles (Multi-Select Enabled)**:
   - **Multi-Select Quick Category Pills**: Click to toggle multiple styles simultaneously (e.g., select both *IPA* and *Sour & Wild* at the same time). Click *All Styles* to reset.
@@ -79,6 +80,7 @@ npx serve .
 - `index.html` — Semantic HTML5 application structure with accessible components.
 - `style.css` — Modern stylesheet with CSS custom properties, responsive grid, and dark/light themes.
 - `app.js` — Reactive filtering engine, URL state sync, localStorage wishlist manager, and sorting logic.
+- `vendor/fuse.basic.min.js` — Fuse.js v7.1.0 (Apache 2.0) for fuzzy search, kept in the repo for offline use.
 - `beers.json` — Raw JSON dataset with 463 beer entries.
 - `sync-data.py` — Rebuilds `beers-data.js` and stamps the service worker cache version.
 - `manifest.webmanifest`, `sw.js`, `icons/` — PWA manifest, offline service worker and app icons.
