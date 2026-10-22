@@ -1155,7 +1155,7 @@
       return;
     }
 
-    DOM.modalListContent.innerHTML = items.map(beer => {
+    DOM.modalListContent.innerHTML = renderListSummary(items, isFavTab) + items.map(beer => {
       const flag = COUNTRY_FLAGS[beer.country] || '🍺';
       return `
         <div class="modal-item-card">
@@ -1170,6 +1170,55 @@
         </div>
       `;
     }).join('');
+  }
+
+  /**
+   * Compact summary shown above the modal list (sessions, styles, ABV, rating)
+   */
+  function renderListSummary(items, isFavTab) {
+    const average = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+    const avgAbv = average(items.map(b => b.alc).filter(a => typeof a === 'number' && !isNaN(a)));
+    const avgRating = average(items.map(b => b.rating).filter(r => r > 0));
+    const breweries = new Set(items.map(b => b.brewery)).size;
+
+    const stats = [
+      { value: items.length, label: items.length === 1 ? 'Beer' : 'Beers' },
+      { value: breweries, label: breweries === 1 ? 'Brewery' : 'Breweries' },
+      { value: avgAbv !== null ? `${avgAbv.toFixed(1)}%` : '–', label: 'Avg ABV' },
+      { value: avgRating !== null ? `★ ${avgRating.toFixed(2)}` : '–', label: 'Avg Rating' }
+    ];
+    if (isFavTab) {
+      const tastedFavs = items.filter(b => state.tasted.has(b.id)).length;
+      stats.push({ value: `${tastedFavs}/${items.length}`, label: 'Tasted' });
+    }
+
+    const sessionChips = ['Fredag', 'Lørdag tidlig', 'Lørdag sen']
+      .map(sess => ({ sess, count: items.filter(b => b.session === sess).length }))
+      .filter(s => s.count > 0)
+      .map(s => `<span class="session-tag ${getSessionClass(s.sess)}">${escapeHtml(s.sess)} · ${s.count}</span>`)
+      .join('');
+
+    const categoryCounts = {};
+    items.forEach(b => { categoryCounts[b.category] = (categoryCounts[b.category] || 0) + 1; });
+    const topCategories = Object.entries(categoryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([cat, count]) => `<span class="list-summary-chip">${escapeHtml(cat)} · ${count}</span>`)
+      .join('');
+
+    return `
+      <div class="list-summary">
+        <div class="list-summary-stats">
+          ${stats.map(s => `
+            <div class="list-summary-stat">
+              <span class="list-summary-value">${s.value}</span>
+              <span class="list-summary-label">${s.label}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="list-summary-chips">${sessionChips}${topCategories}</div>
+      </div>
+    `;
   }
 
   /**
