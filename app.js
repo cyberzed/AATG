@@ -1969,6 +1969,14 @@
       }
     });
 
+    // Download menu: close when clicking outside it or after picking a file
+    const downloadMenu = document.getElementById('downloadMenu');
+    document.addEventListener('click', (e) => {
+      if (downloadMenu.open && (!downloadMenu.contains(e.target) || e.target.closest('a'))) {
+        downloadMenu.open = false;
+      }
+    });
+
     // Theme Toggle Button
     DOM.themeToggleBtn.addEventListener('click', () => {
       const newTheme = state.theme === 'dark' ? 'light' : 'dark';

@@ -1,5 +1,5 @@
 // CACHE_VERSION is stamped automatically by sync-data.py; run it after changing beers.json or the app files.
-const CACHE_VERSION = 'eaf6a246';
+const CACHE_VERSION = 'dd152859';
 const CACHE = 'aat26-' + CACHE_VERSION;
 const CORE = [
   './',
@@ -7,6 +7,8 @@ const CORE = [
   'style.css',
   'app.js',
   'vendor/fuse.basic.min.js',
+  'downloads/aarhus-together-2026-beers.xlsx',
+  'downloads/aarhus-together-2026-beers.csv',
   'beers.json',
   'beers-data.js',
   'manifest.webmanifest',
