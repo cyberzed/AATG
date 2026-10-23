@@ -1979,11 +1979,20 @@
       }
     });
 
-    // Download menu: close when clicking outside it or after picking a file
+    // Download menu: toggle on the button, close when clicking outside it or after picking a file
     const downloadMenu = document.getElementById('downloadMenu');
+    const downloadMenuBtn = document.getElementById('downloadMenuBtn');
+    const downloadMenuList = downloadMenu.querySelector('.download-menu-list');
+    const setDownloadMenuOpen = (open) => {
+      downloadMenuList.hidden = !open;
+      downloadMenuBtn.setAttribute('aria-expanded', String(open));
+      downloadMenu.classList.toggle('open', open);
+    };
     document.addEventListener('click', (e) => {
-      if (downloadMenu.open && (!downloadMenu.contains(e.target) || e.target.closest('a'))) {
-        downloadMenu.open = false;
+      if (downloadMenuBtn.contains(e.target)) {
+        setDownloadMenuOpen(downloadMenuList.hidden);
+      } else if (!downloadMenuList.hidden && (!downloadMenu.contains(e.target) || e.target.closest('a'))) {
+        setDownloadMenuOpen(false);
       }
     });
 

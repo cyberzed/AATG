@@ -161,6 +161,7 @@ body {
 
 .header-inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding-top: 0.85rem;
@@ -172,6 +173,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  /* Shrink the title before pushing the buttons onto a second line */
+  flex: 1 1 7.5rem;
+  min-width: min(7.5rem, 100%);
+}
+
+.brand-text {
+  min-width: 0;
 }
 
 .brand-icon {
@@ -189,7 +197,8 @@ body {
 .brand-title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.5rem;
 }
 
 .brand-title-row h1 {
@@ -198,6 +207,10 @@ body {
   letter-spacing: -0.02em;
   color: var(--text-primary);
   line-height: 1.2;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .badge-year {
@@ -220,6 +233,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* Buttons */
@@ -287,17 +302,13 @@ body {
   position: relative;
 }
 
-.download-menu summary {
-  list-style: none;
-}
-
-.download-menu summary::-webkit-details-marker {
-  display: none;
-}
-
-.download-menu[open] summary {
+.download-menu.open .btn {
   background: var(--bg-elevated);
   color: var(--text-primary);
+}
+
+.download-menu-list[hidden] {
+  display: none;
 }
 
 .download-menu-list {

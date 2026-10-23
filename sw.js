@@ -1,5 +1,5 @@
 // CACHE_VERSION is stamped automatically by sync-data.py; run it after changing beers.json or the app files.
-const CACHE_VERSION = 'ecdf1863';
+const CACHE_VERSION = '7d4017c5';
 const CACHE = 'aat26-' + CACHE_VERSION;
 const CORE = [
   './',
