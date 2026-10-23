@@ -1576,6 +1576,17 @@ body {
   color: var(--text-secondary);
 }
 
+.list-summary-toggle {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  color: var(--accent-amber);
+  border-style: dashed;
+}
+
+.list-summary-toggle:hover {
+  border-color: var(--accent-amber);
+}
+
 .modal-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-subtle);

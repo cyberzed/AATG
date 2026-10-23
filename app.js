@@ -39,6 +39,7 @@
     favorites: new Set(),
     tasted: new Set(),
     modalTab: 'favs',
+    summaryStylesExpanded: false,
     filters: {
       search: '',
       session: 'all',
@@ -1246,11 +1247,15 @@
 
     const categoryCounts = {};
     items.forEach(b => { categoryCounts[b.category] = (categoryCounts[b.category] || 0) + 1; });
-    const topCategories = Object.entries(categoryCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
+    const sortedCategories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
+    const hiddenCount = sortedCategories.length - 3;
+    const shownCategories = state.summaryStylesExpanded ? sortedCategories : sortedCategories.slice(0, 3);
+    let categoryChips = shownCategories
       .map(([cat, count]) => `<span class="list-summary-chip">${escapeHtml(cat)} · ${count}</span>`)
       .join('');
+    if (hiddenCount > 0) {
+      categoryChips += `<button class="list-summary-chip list-summary-toggle" data-summary-toggle>${state.summaryStylesExpanded ? 'Show less' : `+${hiddenCount} more`}</button>`;
+    }
 
     return `
       <div class="list-summary">
@@ -1262,7 +1267,7 @@
             </div>
           `).join('')}
         </div>
-        <div class="list-summary-chips">${sessionChips}${topCategories}</div>
+        <div class="list-summary-chips">${sessionChips}${categoryChips}</div>
       </div>
     `;
   }
@@ -1818,6 +1823,11 @@
     });
 
     DOM.modalListContent.addEventListener('click', (e) => {
+      if (e.target.closest('[data-summary-toggle]')) {
+        state.summaryStylesExpanded = !state.summaryStylesExpanded;
+        renderModalList();
+        return;
+      }
       const removeBtn = e.target.closest('[data-modal-remove]');
       if (removeBtn) {
         const id = removeBtn.getAttribute('data-modal-remove');
