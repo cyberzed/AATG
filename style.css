@@ -213,17 +213,6 @@ body {
   text-overflow: ellipsis;
 }
 
-.badge-year {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #000;
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 0.15rem 0.45rem;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 .brand-subtitle {
   font-size: 0.8rem;
   color: var(--text-secondary);
@@ -1962,8 +1951,7 @@ body {
     padding: 0.5rem 0.6rem;
   }
 
-  #myListBtn .btn-label,
-  .badge-year {
+  #myListBtn .btn-label {
     display: none;
   }
 }
