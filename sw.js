@@ -1,5 +1,5 @@
 // CACHE_VERSION is stamped automatically by sync-data.py; run it after changing beers.json or the app files.
-const CACHE_VERSION = '7d4017c5';
+const CACHE_VERSION = 'a3703465';
 const CACHE = 'aat26-' + CACHE_VERSION;
 const CORE = [
   './',
@@ -18,7 +18,8 @@ const CORE = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
+  // cache: 'reload' skips the browser's HTTP cache, so a new version never stores stale copies of the files
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE.map(url => new Request(url, { cache: 'reload' })))));
   self.skipWaiting();
 });
 
@@ -36,14 +37,16 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
+  const isSameOrigin = url.origin === self.location.origin;
   const isFont = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
-  if (url.origin !== self.location.origin && !isFont) return;
+  if (!isSameOrigin && !isFont) return;
 
   event.respondWith(
     caches.open(CACHE).then(async cache => {
       // Ignore the query string so shared filter/import URLs still hit the cached page.
-      const cached = await cache.match(req, { ignoreSearch: url.origin === self.location.origin });
-      const refresh = fetch(req)
+      const cached = await cache.match(req, { ignoreSearch: isSameOrigin });
+      // no-cache revalidates our own files with the server instead of reusing the HTTP cache
+      const refresh = fetch(isSameOrigin ? new Request(req.url, { cache: 'no-cache' }) : req)
         .then(res => {
           if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
           return res;
